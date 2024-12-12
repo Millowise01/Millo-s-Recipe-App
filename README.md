@@ -1,150 +1,87 @@
-# Multilingual Speech Translation Application
+# Millo's Cuisine Explorer
 
-## 🌐 Overview
-This advanced web application provides comprehensive speech and translation capabilities, allowing users to:
-- Convert spoken words to text
-- Translate text between multiple languages
-- Convert translated text to speech
+Millo's Cuisine Explorer is a web application designed to explore and discover recipes from various African and intercontinental cuisines. This project uses HTML, CSS, and JavaScript to create a dynamic and interactive user experience.
 
-## ✨ Key Features
-- 🎤 Multilingual Speech Recognition
-- 🔤 Real-time Text Translation
-- 🔊 Multilingual Text-to-Speech
-- 8+ Language Support
-- User-Friendly Interface
-- Real-Time Feedback
-- Comprehensive Error Handling
+## Table of Contents
 
-## 🚀 Technologies Used
-- HTML5
-- CSS3
-- Vanilla JavaScript
-- Web Speech API
-- Google Translate API (Optional)
+- [Features](#features)
+- [Setup](#setup)
+- [Usage](#usage)
+- [File Structure](#file-structure)
+- [API Reference](#api-reference)
+- [Contributing](#contributing)
 
-## 🌍 Supported Languages
-- English (US)
-- French (France)
-- Spanish (Spain)
-- German (Germany)
-- Italian (Italy)
-- Japanese (Japan)
-- Chinese (Simplified)
-- Arabic (Saudi Arabia)
+## Contributing
 
-## 🖥️ Supported Browsers
-- Google Chrome (Recommended)
-- Microsoft Edge
-- Mozilla Firefox
-- Safari (Partial Support)
+Contributions are welcome! Please fork the repository and submit a pull request.
 
-## 📋 Prerequisites
-- Modern web browser
-- JavaScript enabled
-- Microphone access
-- (Optional) Google Cloud Translation API Key
+- (#license)
 
-## 🔧 Installation
+## Features
 
-### Clone the Repository
-```bash
-git clone https://github.com/yourusername/multilingual-speech-translation-app.git
-cd multilingual-speech-translation-app
-```
+- **Home Section**: Introduction and featured cuisines from Africa and beyond.
+- **Recipes Section**: Search and display recipes from different cuisines.
+- **Countries Section**: Select recipes based on African regions.
+- **Interactive UI**: Navigate between sections, search recipes, and view detailed recipe information.
 
-### Setup Translation API (Optional)
-1. Sign up for Google Cloud Translation API
-2. Obtain an API key
-3. Replace `YOUR_API_KEY` in `main.js`
+## Setup
 
-### Running the Application
-1. Open `index.html` directly in your web browser
-2. No additional setup required
+To set up the project locally, follow these steps:
 
-## 🎬 How to Use
+1. **Clone the repository**:
+bash
+git clone (https://github.com/your-username/millos-cuisine-explorer.git)
 
-### Speech Recognition
-1. Select source language
-2. Click "Listen" button
-3. Speak into microphone
-4. Text appears in input textarea
+2. **Navigate to the project directory**:
+bash
+cd millos-cuisine-explorer
 
-### Translation
-1. Ensure input text is present
-2. Select target language
-3. Click "Translate" button
-4. Translated text appears in output textarea
+3. **Open `index.html` in your web browser**:
+bash
+open index.html
 
-### Text-to-Speech
-1. Click "Speak" button
-2. Application reads translated text aloud
-3. Voice matches selected language
+## Usage
 
-## 🔒 Permissions
-- Microphone access required
-- Allow permissions when prompted
-- Internet connection recommended
+### Navigation
 
-## ⚠️ Limitations
-- Translation accuracy depends on API service
-- Requires stable internet connection
-- Some languages may have limited support
+- **Home**: Explore featured cuisines.
+- **Recipes**: Search for recipes and view a list of recipes from different cuisines.
+- **Countries**: Select and view recipes based on different African regions.
 
-## 🌐 Browser Compatibility
-| Feature | Chrome | Firefox | Safari | Edge |
-|---------|--------|---------|--------|------|
-| Speech Recognition | ✅ Full | ⚠️ Partial | ⚠️ Limited | ✅ Full |
-| Translation | ✅ Full | ⚠️ Partial | ⚠️ Limited | ✅ Full |
-| Text-to-Speech | ✅ Full | ⚠️ Partial | ⚠️ Limited | ✅ Full |
+### Searching Recipes
 
-## 🛠️ Troubleshooting
-- Verify microphone permissions
-- Check internet connectivity
-- Ensure API key is valid (for translation)
-- Disable browser extensions if experiencing issues
-- Update to the latest browser version
+1. Go to the Recipes section.
+2. Enter a keyword in the search bar and click "Search".
+3. View the search results displayed in the grid.
 
-## 🔄 Workflow
-```
-Speech Input → Text Conversion → Translation → Text-to-Speech Output
-```
+### Viewing Recipe Details
 
-## 🤝 Contributing
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/TranslationEnhancement`)
-3. Commit changes (`git commit -m 'Add translation feature'`)
-4. Push to branch (`git push origin feature/TranslationEnhancement`)
-5. Open Pull Request
+1. Click on a recipe card.
+2. A modal will open displaying detailed information about the recipe, including ingredients and instructions.
 
-## 📄 License
-Distributed under the MIT License. See `LICENSE` for more information.
+### index.html
 
-## 📬 Contact
-Your Name - l.carew@alustudent.com
+Contains the structure of the web application, including the header, navigation buttons, sections, and footer.
 
-Project Link: [https://github.com/yourusername/multilingual-speech-translation-app](https://github.com/yourusername/multilingual-speech-translation-app)
+### style.css
 
-## 🙏 Acknowledgements
-- Web Speech API
-- Google Translate API
-- MDN Web Docs
-- Browser Vendors
+Contains styles for the web application, including layout, typography, and interactive elements.
 
-## 📊 Future Roadmap
-- Expand language support
-- Improve translation accuracy
-- Add more voice options
-- Implement offline translation
-- Enhance UI/UX
-```
+### app.js
 
-Key Updates:
-1. Comprehensive feature description
-2. Detailed usage instructions
-3. Added translation workflow details
-4. Expanded troubleshooting section
-5. Added future roadmap
-6. Enhanced formatting and emojis
-7. Highlighted optional API setup
+Contains JavaScript for dynamic behavior, including navigation logic, fetching and displaying recipes, and handling user interactions.
 
-Would you like me to modify anything in the README or explain any section in more detail?
+## API Reference
+
+This project uses [TheMealDB API](https://www.themealdb.com/api.php) to fetch recipe data.
+
+- **Base URL**: `https://www.themealdb.com/api/json/v1/1/`
+- **Endpoints**:
+  - `filter.php?c=African` - Fetch African recipes.
+  - `filter.php?a=West_African` - Fetch West African recipes.
+  - `search.php?s=QUERY` - Search recipes by name.
+  - `lookup.php?i=ID` - Fetch meal details by ID.
+
+## License
+
+This project is licensed under the MIT License.
