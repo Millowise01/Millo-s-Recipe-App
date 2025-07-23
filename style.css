@@ -133,6 +133,28 @@ nav {
   margin-bottom: 20px;
 }
 
+.sorting-controls {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15px;
+  padding: 0 20px;
+}
+
+.sorting-controls select {
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.recipes-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
 #recipe-search {
   width: 80%;
   padding: 10px;
@@ -212,6 +234,53 @@ nav {
   flex-wrap: wrap;
   gap: 20px;
   justify-content: center;
+  margin-bottom: 30px;
+}
+
+.country-btn {
+  background-color: #ffcc00;
+  border: none;
+  padding: 12px 24px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.country-btn:hover {
+  background-color: #ff9900;
+}
+
+.filter-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.filter-btn {
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 20px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.filter-btn.active {
+  background-color: #ffcc00;
+  border-color: #ff9900;
 }
 
 .country-card {

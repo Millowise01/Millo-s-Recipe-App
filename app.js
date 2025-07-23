@@ -1,6 +1,12 @@
 // API base URL
 const API_BASE_URL = 'https://www.themealdb.com/api/json/v1/1/';
 
+// Cache for API responses
+const apiCache = {};
+
+// Cache expiration time in milliseconds (5 minutes)
+const CACHE_EXPIRATION = 5 * 60 * 1000;
+
 document.addEventListener('DOMContentLoaded', () => {
     const navButtons = document.querySelectorAll('.nav-btn');
     const sections = document.querySelectorAll('.section');
@@ -12,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const recipeSearch = document.getElementById('recipe-search');
     const cuisineButtons = document.querySelectorAll('.cuisine-btn');
     const countryButtons = document.querySelectorAll('.country-btn');
+    const filterButtons = document.querySelectorAll('.filter-btn');
 
     // Navigation logic
     navButtons.forEach(btn => {
@@ -37,17 +44,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Fetch African Recipes
+    // Fetch African Recipes with caching
     async function fetchAfricanRecipes(cuisine = '') {
         const url = cuisine ? `${API_BASE_URL}filter.php?a=${cuisine}` : `${API_BASE_URL}filter.php?c=African`;
-
+        const cacheKey = `african_${cuisine}`;
+        
         try {
+            // Check if we have a valid cache entry
+            if (apiCache[cacheKey] && (Date.now() - apiCache[cacheKey].timestamp) < CACHE_EXPIRATION) {
+                console.log('Using cached data for:', cacheKey);
+                displayRecipes(apiCache[cacheKey].data);
+                return;
+            }
+            
+            // Show loading state
+            recipesGrid.innerHTML = '<p>Loading recipes...</p>';
+            
             const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            
             const data = await response.json();
+            
+            // Cache the response
+            apiCache[cacheKey] = {
+                data: data.meals,
+                timestamp: Date.now()
+            };
+            
             displayRecipes(data.meals);
         } catch (error) {
-            console.error('Error fetching African recipes:', error);
-            recipesGrid.innerHTML = '<p>Failed to load recipes</p>';
+            console.error('Error fetching recipes:', error);
+            recipesGrid.innerHTML = `<p>Failed to load recipes: ${error.message}</p>`;
         }
     }
 
@@ -63,19 +92,42 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Search Recipes
+    // Search Recipes with caching
     async function searchRecipes(query) {
+        const cacheKey = `search_${query}`;
+        
         try {
+            // Check if we have a valid cache entry
+            if (apiCache[cacheKey] && (Date.now() - apiCache[cacheKey].timestamp) < CACHE_EXPIRATION) {
+                console.log('Using cached search results for:', query);
+                displayRecipes(apiCache[cacheKey].data);
+                return;
+            }
+            
+            // Show loading state
+            recipesGrid.innerHTML = '<p>Searching recipes...</p>';
+            
             const response = await fetch(`${API_BASE_URL}search.php?s=${query}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            
             const data = await response.json();
+            
+            // Cache the response
+            apiCache[cacheKey] = {
+                data: data.meals,
+                timestamp: Date.now()
+            };
+            
             displayRecipes(data.meals);
         } catch (error) {
             console.error('Error searching recipes:', error);
-            recipesGrid.innerHTML = '<p>No recipes found</p>';
+            recipesGrid.innerHTML = `<p>No recipes found: ${error.message}</p>`;
         }
     }
 
-    // Display Recipes
+    // Display Recipes with sorting options
     function displayRecipes(meals) {
         recipesGrid.innerHTML = ''; // Clear previous results
         
@@ -83,7 +135,50 @@ document.addEventListener('DOMContentLoaded', () => {
             recipesGrid.innerHTML = '<p>No recipes found</p>';
             return;
         }
-
+        
+        // Add sorting controls
+        const sortingControls = document.createElement('div');
+        sortingControls.classList.add('sorting-controls');
+        sortingControls.innerHTML = `
+            <label for="sort-recipes">Sort by: </label>
+            <select id="sort-recipes">
+                <option value="default">Default</option>
+                <option value="name-asc">Name (A-Z)</option>
+                <option value="name-desc">Name (Z-A)</option>
+            </select>
+        `;
+        recipesGrid.appendChild(sortingControls);
+        
+        // Create a container for the recipe cards
+        const recipesContainer = document.createElement('div');
+        recipesContainer.classList.add('recipes-container');
+        recipesGrid.appendChild(recipesContainer);
+        
+        // Add event listener for sorting
+        const sortSelect = document.getElementById('sort-recipes');
+        sortSelect.addEventListener('change', () => {
+            const sortedMeals = [...meals];
+            switch(sortSelect.value) {
+                case 'name-asc':
+                    sortedMeals.sort((a, b) => a.strMeal.localeCompare(b.strMeal));
+                    break;
+                case 'name-desc':
+                    sortedMeals.sort((a, b) => b.strMeal.localeCompare(a.strMeal));
+                    break;
+                default:
+                    // Keep original order
+                    break;
+            }
+            renderRecipeCards(sortedMeals, recipesContainer);
+        });
+        
+        // Initial render
+        renderRecipeCards(meals, recipesContainer);
+    }
+    
+    // Render recipe cards
+    function renderRecipeCards(meals, container) {
+        container.innerHTML = '';
         meals.forEach(meal => {
             const recipeCard = document.createElement('div');
             recipeCard.classList.add('recipe-card');
@@ -92,18 +187,58 @@ document.addEventListener('DOMContentLoaded', () => {
                 <h3>${meal.strMeal}</h3>
                 <button onclick="fetchMealDetails('${meal.idMeal}')">View Recipe</button>
             `;
-            recipesGrid.appendChild(recipeCard);
+            container.appendChild(recipeCard);
         });
     }
 
-    // Fetch Meal Details
+    // Fetch Meal Details with caching
     async function fetchMealDetails(mealId) {
+        const cacheKey = `meal_${mealId}`;
+        
         try {
+            // Check if we have a valid cache entry
+            if (apiCache[cacheKey] && (Date.now() - apiCache[cacheKey].timestamp) < CACHE_EXPIRATION) {
+                console.log('Using cached meal details for:', mealId);
+                displayMealDetails(apiCache[cacheKey].data);
+                return;
+            }
+            
+            // Create loading modal
+            const loadingModal = document.createElement('div');
+            loadingModal.classList.add('meal-details-modal');
+            loadingModal.innerHTML = `
+                <div class="modal-content">
+                    <p>Loading recipe details...</p>
+                </div>
+            `;
+            document.body.appendChild(loadingModal);
+            
             const response = await fetch(`${API_BASE_URL}lookup.php?i=${mealId}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            
             const data = await response.json();
+            
+            // Remove loading modal
+            document.body.removeChild(loadingModal);
+            
+            // Cache the response
+            apiCache[cacheKey] = {
+                data: data.meals[0],
+                timestamp: Date.now()
+            };
+            
             displayMealDetails(data.meals[0]);
         } catch (error) {
             console.error('Error fetching meal details:', error);
+            alert(`Failed to load recipe details: ${error.message}`);
+            
+            // Remove loading modal if it exists
+            const loadingModal = document.querySelector('.meal-details-modal');
+            if (loadingModal) {
+                document.body.removeChild(loadingModal);
+            }
         }
     }
 
@@ -170,8 +305,60 @@ document.addEventListener('DOMContentLoaded', () => {
             const country = btn.getAttribute('data-country');
             fetchAfricanRecipes(country);
             document.getElementById('recipes-btn').click();
+            
+            // Update active state
+            countryButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
         });
     });
+    
+    // Filter Buttons Event Listeners
+    filterButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const filter = btn.getAttribute('data-filter');
+            fetchRecipesByCategory(filter);
+            document.getElementById('recipes-btn').click();
+            
+            // Update active state
+            filterButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        });
+    });
+    
+    // Fetch Recipes by Category
+    async function fetchRecipesByCategory(category) {
+        const cacheKey = `category_${category}`;
+        
+        try {
+            // Check if we have a valid cache entry
+            if (apiCache[cacheKey] && (Date.now() - apiCache[cacheKey].timestamp) < CACHE_EXPIRATION) {
+                console.log('Using cached category data for:', category);
+                displayRecipes(apiCache[cacheKey].data);
+                return;
+            }
+            
+            // Show loading state
+            recipesGrid.innerHTML = '<p>Loading recipes...</p>';
+            
+            const response = await fetch(`${API_BASE_URL}filter.php?c=${category}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            // Cache the response
+            apiCache[cacheKey] = {
+                data: data.meals,
+                timestamp: Date.now()
+            };
+            
+            displayRecipes(data.meals);
+        } catch (error) {
+            console.error('Error fetching recipes by category:', error);
+            recipesGrid.innerHTML = `<p>Failed to load recipes: ${error.message}</p>`;
+        }
+    };
 
     // Initial load of African Recipes
     fetchAfricanRecipes();

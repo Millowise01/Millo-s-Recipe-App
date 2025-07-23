@@ -9,6 +9,7 @@ Millo's Cuisine Explorer is a web application designed to explore and discover r
 - [Usage](#usage)
 - [File Structure](#file-structure)
 - [API Reference](#api-reference)
+- [Deployment](#deployment)
 - [Contributing](#contributing)
 
 ## Contributing
@@ -81,6 +82,24 @@ This project uses [TheMealDB API](https://www.themealdb.com/api.php) to fetch re
   - `filter.php?a=West_African` - Fetch West African recipes.
   - `search.php?s=QUERY` - Search recipes by name.
   - `lookup.php?i=ID` - Fetch meal details by ID.
+  - `filter.php?c=CATEGORY` - Filter recipes by category (e.g., Vegetarian, Seafood).
+
+## Deployment
+
+This application is deployed on two web servers with a load balancer for high availability and performance.
+
+### Web Servers
+
+The application is deployed on two standard web servers (Web01 and Web02) to ensure redundancy and reliability.
+
+### Load Balancer
+
+A load balancer (Lb01) is configured to distribute incoming traffic between the two web servers, providing:
+- Improved performance by distributing the load
+- High availability with failover capability
+- Scalability for handling increased traffic
+
+For detailed deployment instructions, see [deployment.md](deployment.md).
 
 ## License
 
