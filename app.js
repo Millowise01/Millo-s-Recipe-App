@@ -8,6 +8,8 @@ const apiCache = {};
 const CACHE_EXPIRATION = 5 * 60 * 1000;
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Fetch and display popular recipes on the home page
+    fetchPopularRecipes();
     const navButtons = document.querySelectorAll('.nav-btn');
     const sections = document.querySelectorAll('.section');
     const homeSection = document.getElementById('home-section');
@@ -39,6 +41,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     break;
                 case 'countries-btn':
                     countriesSection.classList.add('active-section');
+                    // Load West African recipes by default when Countries section is opened
+                    if (!countriesSection.hasAttribute('data-loaded')) {
+                        fetchAfricanRecipes('West_African');
+                        document.getElementById('recipes-btn').click();
+                        countriesSection.setAttribute('data-loaded', 'true');
+                    }
                     break;
             }
         });
@@ -58,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             // Show loading state
-            recipesGrid.innerHTML = '<p>Loading recipes...</p>';
+            recipesGrid.innerHTML = '<div class="loading-indicator"></div><p>Loading recipes...</p>';
             
             const response = await fetch(url);
             if (!response.ok) {
@@ -67,13 +75,28 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const data = await response.json();
             
-            // Cache the response
-            apiCache[cacheKey] = {
-                data: data.meals,
-                timestamp: Date.now()
-            };
-            
-            displayRecipes(data.meals);
+            if (!data.meals) {
+                // If no meals found for this cuisine, try a fallback search
+                recipesGrid.innerHTML = '<p>No specific recipes found. Showing popular recipes instead...</p>';
+                const fallbackResponse = await fetch(`${API_BASE_URL}search.php?s=${cuisine || 'African'}`);
+                const fallbackData = await fallbackResponse.json();
+                
+                // Cache the fallback response
+                apiCache[cacheKey] = {
+                    data: fallbackData.meals,
+                    timestamp: Date.now()
+                };
+                
+                displayRecipes(fallbackData.meals);
+            } else {
+                // Cache the response
+                apiCache[cacheKey] = {
+                    data: data.meals,
+                    timestamp: Date.now()
+                };
+                
+                displayRecipes(data.meals);
+            }
         } catch (error) {
             console.error('Error fetching recipes:', error);
             recipesGrid.innerHTML = `<p>Failed to load recipes: ${error.message}</p>`;
@@ -105,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             // Show loading state
-            recipesGrid.innerHTML = '<p>Searching recipes...</p>';
+            recipesGrid.innerHTML = '<div class="loading-indicator"></div><p>Searching recipes...</p>';
             
             const response = await fetch(`${API_BASE_URL}search.php?s=${query}`);
             if (!response.ok) {
@@ -208,6 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
             loadingModal.classList.add('meal-details-modal');
             loadingModal.innerHTML = `
                 <div class="modal-content">
+                    <div class="loading-indicator"></div>
                     <p>Loading recipe details...</p>
                 </div>
             `;
@@ -289,6 +313,16 @@ document.addEventListener('DOMContentLoaded', () => {
             searchRecipes(searchQuery);
         }
     });
+    
+    // Add Enter key support for search
+    recipeSearch.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            const searchQuery = recipeSearch.value.trim();
+            if (searchQuery) {
+                searchRecipes(searchQuery);
+            }
+        }
+    });
 
     // Cuisine Buttons Event Listeners
     cuisineButtons.forEach(btn => {
@@ -338,7 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             // Show loading state
-            recipesGrid.innerHTML = '<p>Loading recipes...</p>';
+            recipesGrid.innerHTML = '<div class="loading-indicator"></div><p>Loading recipes...</p>';
             
             const response = await fetch(`${API_BASE_URL}filter.php?c=${category}`);
             if (!response.ok) {
@@ -347,18 +381,90 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const data = await response.json();
             
-            // Cache the response
-            apiCache[cacheKey] = {
-                data: data.meals,
-                timestamp: Date.now()
-            };
-            
-            displayRecipes(data.meals);
+            if (!data.meals) {
+                // If no meals found for this category, try a fallback search
+                recipesGrid.innerHTML = '<p>No recipes found in this category. Showing related recipes instead...</p>';
+                const fallbackResponse = await fetch(`${API_BASE_URL}search.php?s=${category}`);
+                const fallbackData = await fallbackResponse.json();
+                
+                // Cache the fallback response
+                apiCache[cacheKey] = {
+                    data: fallbackData.meals,
+                    timestamp: Date.now()
+                };
+                
+                displayRecipes(fallbackData.meals);
+            } else {
+                // Cache the response
+                apiCache[cacheKey] = {
+                    data: data.meals,
+                    timestamp: Date.now()
+                };
+                
+                displayRecipes(data.meals);
+            }
         } catch (error) {
             console.error('Error fetching recipes by category:', error);
             recipesGrid.innerHTML = `<p>Failed to load recipes: ${error.message}</p>`;
         }
     };
+
+    // Fetch Popular Recipes for Home Page
+    async function fetchPopularRecipes() {
+        const popularContainer = document.createElement('div');
+        popularContainer.classList.add('popular-recipes');
+        popularContainer.innerHTML = '<h2>Popular Recipes</h2><div class="recipes-container" id="popular-recipes-container"><p>Loading popular recipes...</p></div>';
+        
+        // Add to home section after featured cuisines
+        const featuredCuisines = document.querySelector('.featured-cuisines');
+        if (featuredCuisines && featuredCuisines.parentNode) {
+            featuredCuisines.parentNode.insertBefore(popularContainer, featuredCuisines.nextSibling);
+        }
+        
+        try {
+            // Try to get random meals for variety
+            const response = await fetch(`${API_BASE_URL}random.php`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            if (data.meals && data.meals.length > 0) {
+                // Get more random meals to have a good selection
+                const additionalResponses = await Promise.all([
+                    fetch(`${API_BASE_URL}random.php`).then(res => res.json()),
+                    fetch(`${API_BASE_URL}random.php`).then(res => res.json()),
+                    fetch(`${API_BASE_URL}random.php`).then(res => res.json())
+                ]);
+                
+                const allMeals = [
+                    data.meals[0],
+                    ...additionalResponses.map(res => res.meals[0])
+                ];
+                
+                const popularContainer = document.getElementById('popular-recipes-container');
+                if (popularContainer) {
+                    popularContainer.innerHTML = '';
+                    allMeals.forEach(meal => {
+                        const recipeCard = document.createElement('div');
+                        recipeCard.classList.add('recipe-card');
+                        recipeCard.innerHTML = `
+                            <img src="${meal.strMealThumb}" alt="${meal.strMeal}">
+                            <h3>${meal.strMeal}</h3>
+                            <button onclick="fetchMealDetails('${meal.idMeal}')">View Recipe</button>
+                        `;
+                        popularContainer.appendChild(recipeCard);
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching popular recipes:', error);
+            const popularContainer = document.getElementById('popular-recipes-container');
+            if (popularContainer) {
+                popularContainer.innerHTML = '<p>Failed to load popular recipes. Please try again later.</p>';
+            }
+        }
+    }
 
     // Initial load of African Recipes
     fetchAfricanRecipes();
