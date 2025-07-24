@@ -5,6 +5,7 @@ This guide provides instructions for deploying the Millo's Cuisine Explorer appl
 ## Part 1: Deploying to Web Servers
 
 ### Prerequisites
+
 - Access to two web servers (Web01 and Web02)
 - SSH access to both servers
 - Web servers with Apache or Nginx installed
@@ -20,34 +21,28 @@ This guide provides instructions for deploying the Millo's Cuisine Explorer appl
 #### Step 2: Deploy to Web01
 
 1. Connect to Web01 via SSH:
-   ```
+   ```bash
+
    ssh username@web01-server-ip
-   ```
+   ```bash
 
 2. Navigate to the web server's document root:
-   ```
+
+   ```bash
    cd /var/www/html/
    ```
 
 3. Create a directory for the application:
-   ```
    sudo mkdir millos-cuisine
-   ```
 
 4. Set appropriate permissions:
-   ```
    sudo chown -R $USER:$USER /var/www/html/millos-cuisine
-   ```
 
 5. Upload the application files using SCP from your local machine:
-   ```
    scp -r /path/to/local/Millo-s-Recipe-App/* username@web01-server-ip:/var/www/html/millos-cuisine/
-   ```
 
 6. Configure the web server (Apache example):
-   ```
    sudo nano /etc/apache2/sites-available/millos-cuisine.conf
-   ```
 
    Add the following configuration:
    ```
@@ -199,6 +194,7 @@ Repeat the same steps as for Web01, but connect to Web02 instead:
 
 3. **Regular Updates:**
    Keep all systems updated with security patches:
+
    ```
    sudo apt update
    sudo apt upgrade

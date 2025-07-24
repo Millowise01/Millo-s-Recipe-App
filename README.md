@@ -7,7 +7,6 @@ Millo's Cuisine Explorer is a web application designed to explore and discover r
 - [Features](#features)
 - [Setup](#setup)
 - [Usage](#usage)
-- [File Structure](#file-structure)
 - [API Reference](#api-reference)
 - [Deployment](#deployment)
 - [Contributing](#contributing)
@@ -31,7 +30,7 @@ To set up the project locally, follow these steps:
 
 1. **Clone the repository**:
 bash
-git clone (https://github.com/your-username/millos-cuisine-explorer.git)
+git clone https://github.com/your-username/millos-cuisine-explorer.git
 
 2. **Navigate to the project directory**:
 bash
@@ -95,6 +94,7 @@ The application is deployed on two standard web servers (Web01 and Web02) to ens
 ### Load Balancer
 
 A load balancer (Lb01) is configured to distribute incoming traffic between the two web servers, providing:
+
 - Improved performance by distributing the load
 - High availability with failover capability
 - Scalability for handling increased traffic
