@@ -1,402 +1,21 @@
-/* General Styles */
-body {
-  font-family: 'Poppins', sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f4f4f4;
-}
+/* Enhanced Responsive Styles */
 
-.container {
-  inline-size: 90%;
-  margin: 0 auto;
-}
-
-/* Header Styles */
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 0;
-  background-color: #333;
-  color: #fff;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-}
-
-.logo img {
-  inline-size: 50px;
-  margin-inline-end: 10px;
-}
-
-nav {
-  display: flex;
-}
-
-.nav-btn {
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 16px;
-  margin-inline-start: 20px;
-  cursor: pointer;
-  transition: color 0.3s ease;
-}
-
-.nav-btn:hover {
-  color: #ffcc00;
-}
-
-.nav-btn.active {
-  font-weight: bold;
-  color: #ffcc00;
-}
-
-/* Section Styles */
-.section {
-  display: none;
-  padding: 20px 0;
-}
-
-.active-section {
-  display: block;
-}
-
-/* Home Section Styles */
-#home-section {
-  text-align: center;
-  padding: 40px 20px;
-  background: url('background.jpg') no-repeat center center/cover;
-  color: #fff;
-}
-
-#home-section h2 {
-  font-size: 36px;
-  margin-block-end: 10px;
-}
-
-#home-section p {
-  font-size: 18px;
-}
-
-.featured-cuisines {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-block-start: 20px;
-  flex-wrap: wrap;
-}
-
-.cuisine-card {
-  background-color: rgba(255, 255, 255, 0.8);
-  padding: 20px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  text-align: center;
-  inline-size: 250px;
-  border-radius: 10px;
-  transition: transform 0.3s ease;
-}
-
-.cuisine-card:hover {
-  transform: translateY(-10px);
-}
-
-.cuisine-card img {
-  inline-size: 100%;
-  block-size: auto;
-  border-radius: 10px;
-}
-
-.cuisine-card h3 {
-  margin: 10px 0;
-}
-
-.cuisine-card button {
-  background-color: #ffcc00;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  border-radius: 5px;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
-}
-
-.cuisine-card button:hover {
-  background-color: #ff9900;
-}
-
-/* Popular Recipes Section */
-.popular-recipes {
-  margin-block-start: 40px;
-  padding: 20px;
-  background-color: rgba(255, 255, 255, 0.9);
-  border-radius: 10px;
-}
-
-.popular-recipes h2 {
-  text-align: center;
-  color: #333;
-  margin-block-end: 20px;
-}
-
-/* Recipes Section Styles */
-.search-container {
-  text-align: center;
-  margin-block-end: 20px;
-}
-
-.sorting-controls {
-  display: flex;
-  justify-content: flex-end;
-  margin-block-end: 15px;
-  padding: 0 20px;
-}
-
-.sorting-controls select {
-  padding: 5px 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: white;
-  cursor: pointer;
-}
-
-.recipes-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-}
-
-#recipe-search {
-  inline-size: 80%;
-  padding: 10px;
-  font-size: 16px;
-  border: 2px solid #ffcc00;
-  border-radius: 5px;
-  transition: border-color 0.3s ease;
-}
-
-#recipe-search:focus {
-  border-color: #ff9900;
-  outline: none;
-}
-
-#search-btn {
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  background-color: #ffcc00;
-  border: none;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-}
-
-#search-btn:hover {
-  background-color: #ff9900;
-}
-
-.recipes-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-}
-
-.recipe-card {
-  background-color: #fff;
-  padding: 20px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  text-align: center;
-  inline-size: 250px;
-  border-radius: 10px;
-  transition: transform 0.3s ease;
-}
-
-.recipe-card:hover {
-  transform: translateY(-10px);
-}
-
-.recipe-card img {
-  inline-size: 100%;
-  block-size: auto;
-  border-radius: 10px;
-}
-
-.recipe-card h3 {
-  margin: 10px 0;
-}
-
-.recipe-card button {
-  background-color: #ffcc00;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-  border-radius: 5px;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
-}
-
-.recipe-card button:hover {
-  background-color: #ff9900;
-}
-
-/* Countries Section Styles */
-.countries-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-  margin-block-end: 30px;
-}
-
-.country-btn {
-  background-color: #ffcc00;
-  border: none;
-  padding: 12px 24px;
-  cursor: pointer;
-  border-radius: 5px;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
-}
-
-.country-btn:hover {
-  background-color: #ff9900;
-}
-
-.filter-container {
-  margin-block-start: 20px;
-  text-align: center;
-}
-
-.filter-options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-  margin-block-start: 10px;
-}
-
-.filter-btn {
-  background-color: #f0f0f0;
-  border: 1px solid #ddd;
-  padding: 8px 16px;
-  cursor: pointer;
-  border-radius: 20px;
-  font-size: 14px;
-  transition: all 0.3s ease;
-}
-
-.filter-btn:hover {
-  background-color: #e0e0e0;
-}
-
-.filter-btn.active {
-  background-color: #ffcc00;
-  border-color: #ff9900;
-}
-
-.country-card {
-  background-color: #fff;
-  padding: 20px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  text-align: center;
-  inline-size: 250px;
-  border-radius: 10px;
-  transition: transform 0.3s ease;
-}
-
-.country-card:hover {
-  transform: translateY(-10px);
-}
-
-/* Loading Indicator */
-.loading-indicator {
-  display: inline-block;
-  inline-size: 50px;
-  block-size: 50px;
-  border: 5px solid rgba(255, 204, 0, 0.3);
-  border-radius: 50%;
-  border-block-start-color: #ffcc00;
-  animation: spin 1s ease-in-out infinite;
-  margin: 20px auto;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* Loading Indicator */
-.loading-indicator {
-  display: inline-block;
-  inline-size: 50px;
-  block-size: 50px;
-  border: 5px solid rgba(255, 204, 0, 0.3);
-  border-radius: 50%;
-  border-block-start-color: #ffcc00;
-  animation: spin 1s ease-in-out infinite;
-  margin: 20px auto;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* Modal Styles */
-.meal-details-modal {
-  position: fixed;
-  inset-block-start: 0;
-  inset-inline-start: 0;
-  inline-size: 100%;
-  block-size: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-content {
-  background-color: #fff;
-  padding: 20px;
-  max-inline-size: 500px;
-  inline-size: 100%;
-  position: relative;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  text-align: start;
-  border-radius: 10px;
-}
-
-.close-btn {
-  position: absolute;
-  inset-block-start: 10px;
-  inset-inline-end: 10px;
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  transition: color 0.3s ease;
-}
-
-.close-btn:hover {
-  color: #ff0000;
-}
-
-/* General layout */
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
-  background-color: #f9f9f9;
+  background: url('background.jpg') no-repeat center center fixed;
+  background-size: cover;
   color: #333;
 }
 
 header {
-  background-color: #fff;
-  border-block-end: 1px solid #ccc;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-block-end: 1px solid #e40303;
   padding: 10px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .logo {
@@ -414,6 +33,7 @@ nav a {
   text-decoration: none;
   color: #333;
   font-weight: 500;
+  transition: color 0.3s ease;
 }
 
 nav a:hover {
@@ -424,41 +44,89 @@ main {
   padding: 20px;
   max-inline-size: 1000px;
   margin: auto;
+  background-color: rgba(255, 255, 255, 0.85);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 h2 {
-  font-size: 24px;
+  font-size: 26px;
   margin-block-end: 20px;
+  text-align: center;
 }
 
 .dish-card {
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  background: url('dish-bg.jpg') center/cover no-repeat;
+  color: #0f0f0f;
+  border: 1px solid #610202;
+  border-radius: 10px;
   padding: 16px;
   margin-block-end: 20px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
 }
 
 .dish-card h3 {
   margin-block-start: 0;
+  font-size: 20px;
+}
+
+.dish-card p {
+  margin-block-end: 8px;
+  font-size: 16px;
 }
 
 .dish-card a {
-  color: #0077cc;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-.dish-card a:hover {
+  color: #746803;
   text-decoration: underline;
+  font-weight: bold;
 }
 
 footer {
   text-align: center;
   padding: 20px;
-  background-color: #fff;
+  background-color: rgba(255, 255, 255, 0.9);
   border-block-start: 1px solid #ccc;
-  margin-block-start: 40px;
   font-size: 14px;
-} 
+  margin-block-start: 40px;
+}
+
+@media (max-width: 768px) {
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .dish-card {
+    padding: 12px;
+  }
+
+  main {
+    padding: 15px;
+  }
+}
+@media (max-width: 480px) {
+  header {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .logo img {
+    block-size: 30px;
+  }
+
+  h2 {
+    font-size: 22px;
+  }
+
+  .dish-card h3 {
+    font-size: 18px;
+  }
+
+  .dish-card p {
+    font-size: 14px;
+  }
+}

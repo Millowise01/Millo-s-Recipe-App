@@ -1,147 +1,339 @@
 # Millo's Cuisine Explorer
 
-Millo's Cuisine Explorer is a web application designed to explore and discover recipes from various African and intercontinental cuisines. This project uses HTML, CSS, and JavaScript to create a dynamic and interactive user experience.
+A full-stack web application for discovering and exploring authentic recipes from various African and intercontinental cuisines. Built with Node.js, Express.js, and vanilla JavaScript.
 
-## Table of Contents
+## Purpose
 
-- [Features](#features)
-- [Setup](#setup)
-- [Usage](#usage)
-- [API Reference](#api-reference)
-- [Deployment](#deployment)
-- [Contributing](#contributing)
-
-## Contributing
-
-Contributions are welcome! Please fork the repository and submit a pull request.
-
-- (#license)
+This application serves a practical purpose by helping users discover authentic recipes, explore different cuisines, and find meal inspiration. It addresses the real need for accessible, searchable recipe discovery with comprehensive filtering and sorting capabilities.
 
 ## Features
 
-- **Home Section**: Introduction and featured cuisines from Africa and beyond.
-- **Recipes Section**: Search and display recipes from different cuisines.
-- **Countries Section**: Select recipes based on African regions.
-- **Interactive UI**: Navigate between sections, search recipes, and view detailed recipe information.
+- **Recipe Search**: Real-time search by recipe name
+- **Cuisine Filtering**: Browse recipes by African regions and international cuisines
+- **Category Filtering**: Filter by food categories (Vegetarian, Seafood, Chicken, etc.)
+- **Recipe Sorting**: Alphabetical sorting options (A-Z, Z-A)
+- **Detailed Views**: Complete recipe information with ingredients and instructions
+- **Popular Recipes**: Featured recipes on the home page
+- **Responsive Design**: Works on all devices and screen sizes
 
-## Setup
+## Quick Start
 
-To set up the project locally, follow these steps:
+### Prerequisites
+
+- Node.js (v14 or higher)
+- npm (Node Package Manager)
+
+### Installation & Setup
 
 1. **Clone the repository**:
-```bash
-git clone https://github.com/your-username/millos-cuisine-explorer.git
-```
 
-2. **Navigate to the project directory**:
 ```bash
+git clone https://github.com/Millowise01/Millo-s-Recipe-App.git
 cd millos-cuisine-explorer
 ```
 
-3. **Install dependencies**:
+**Install dependencies**:
+
 ```bash
 npm install
 ```
 
-4. **Start the server**:
+**Start the server**:
+
 ```bash
 npm start
 ```
 
-5. **Access the application**:
-Open your web browser and navigate to `http://localhost:3000`
+**Access the application**:
+
+Open your browser and navigate to `http://localhost:3000`
 
 ### Quick Start Scripts
 
 **Windows:**
+
 ```cmd
 start.bat
 ```
 
 **Linux/Mac:**
+
 ```bash
 chmod +x start.sh
 ./start.sh
 ```
 
-## Usage
+## Architecture
 
-### Navigation
+### Backend (Node.js + Express.js)
 
-- **Home**: Explore featured cuisines.
-- **Recipes**: Search for recipes and view a list of recipes from different cuisines.
-- **Countries**: Select and view recipes based on different African regions.
+- RESTful API with 9 endpoints
+- Server-side caching for performance
+- Comprehensive error handling
+- Security headers and CORS configuration
 
-### Searching Recipes
+### Frontend (HTML + CSS + JavaScript)
 
-1. Go to the Recipes section.
-2. Enter a keyword in the search bar and click "Search".
-3. View the search results displayed in the grid.
+- Responsive, modern UI design
+- Dynamic content loading
+- Interactive user interface
+- Real-time search and filtering
 
-### Viewing Recipe Details
+### External API Integration
 
-1. Click on a recipe card.
-2. A modal will open displaying detailed information about the recipe, including ingredients and instructions.
+- **TheMealDB API**: Primary data source for recipes
 
-## File Structure
+- **Caching Strategy**: 5-minute TTL to optimize performance
+- **Error Handling**: Graceful fallback for API issues
 
-### Frontend Files
-- **index.html** - Main HTML structure with navigation and sections
-- **style.css** - Styling for the web application
-- **app.js** - Frontend JavaScript for user interactions
-- **health.js** - Health check functionality
+## 📡 API Endpoints
 
-### Backend Files
-- **server.js** - Express.js server with API endpoints
-- **package.json** - Node.js dependencies and scripts
-
-### Deployment Files
-- **deployment.md** - Detailed deployment instructions
-- **start.bat** / **start.sh** - Quick start scripts
-- **.gitignore** - Git ignore file
-
-## Backend API Endpoints
-
-- `GET /api/health` - Health check endpoint
-- `GET /api/recipes/random?count=4` - Get random recipes
+- `GET /api/health` - Health check for load balancer
+- `GET /api/recipes/random?count=N` - Get random recipes
 - `GET /api/recipes/search?q=query` - Search recipes by name
 - `GET /api/recipes/category/:category` - Get recipes by category
-- `GET /api/recipes/area/:area` - Get recipes by area/cuisine
+- `GET /api/recipes/area/:area` - Get recipes by cuisine/area
 - `GET /api/recipes/details/:id` - Get detailed recipe information
 - `GET /api/categories` - Get all available categories
-- `GET /api/areas` - Get all available areas/cuisines
+- `GET /api/areas` - Get all available cuisines/areas
 - `GET /api/recipes/african` - Get featured African recipes
 
-## API Reference
+## 🧪 Testing
 
-This project uses [TheMealDB API](https://www.themealdb.com/api.php) to fetch recipe data.
+### API Testing
 
-- **Base URL**: `https://www.themealdb.com/api/json/v1/1/`
-- **Endpoints**:
-  - `filter.php?c=African` - Fetch African recipes.
-  - `filter.php?a=West_African` - Fetch West African recipes.
-  - `search.php?s=QUERY` - Search recipes by name.
-  - `lookup.php?i=ID` - Fetch meal details by ID.
-  - `filter.php?c=CATEGORY` - Filter recipes by category (e.g., Vegetarian, Seafood).
+Load the test suite in your browser console:
 
-## Deployment
+```javascript
+// Test all API endpoints
+testAllAPIs()
 
-This application is deployed on two web servers with a load balancer for high availability and performance.
+// Test specific meal details
+testMealDetails('52874')
 
-### Web Servers
+// Performance testing
+performanceTest()
+```
 
-The application is deployed on two standard web servers (Web01 and Web02) to ensure redundancy and reliability.
+### Load Balancer Testing
 
-### Load Balancer
+After deployment, test load balancing:
 
-A load balancer (Lb01) is configured to distribute incoming traffic between the two web servers, providing:
+```javascript
+testLoadBalancer(20)
+```
 
-- Improved performance by distributing the load
-- High availability with failover capability
-- Scalability for handling increased traffic
+## 🚀 Deployment
+
+### Local Development
+
+```bash
+npm run dev  # Start with nodemon for development
+```
+
+### Production Deployment
+
+#### Web Servers (Web01 & Web02)
+
+1. **Install Node.js**:
+
+```bash
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt-get install -y nodejs
+```
+
+**Deploy application**:
+
+```bash
+sudo mkdir -p /var/www/millos-cuisine
+sudo chown -R $USER:$USER /var/www/millos-cuisine
+scp -r ./* username@server-ip:/var/www/millos-cuisine/
+cd /var/www/millos-cuisine
+npm install
+```
+
+**Create systemd service**:
+
+```bash
+sudo nano /etc/systemd/system/millos-cuisine.service
+```
+
+```ini
+[Unit]
+Description=Millo's Cuisine Explorer
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/millos-cuisine
+ExecStart=/usr/bin/node server.js
+Restart=on-failure
+Environment=NODE_ENV=production
+Environment=PORT=3000
+
+[Install]
+WantedBy=multi-user.target
+```
+
+**Start service**:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable millos-cuisine
+sudo systemctl start millos-cuisine
+```
+
+**Configure Nginx reverse proxy**:
+
+```bash
+sudo nano /etc/nginx/sites-available/millos-cuisine
+```
+
+```nginx
+server {
+    listen 80;
+    server_name your-domain.com;
+
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+```bash
+sudo ln -s /etc/nginx/sites-available/millos-cuisine /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+```
+
+#### Load Balancer (Lb01)
+
+```bash
+sudo nano /etc/nginx/sites-available/millos-cuisine-lb
+```
+
+```nginx
+upstream millos_backend {
+    server web01-ip:80;
+    server web02-ip:80;
+    keepalive 32;
+}
+
+server {
+    listen 80;
+    server_name your-load-balancer-domain.com;
+
+    location / {
+        proxy_pass http://millos_backend;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
 
 For detailed deployment instructions, see [deployment.md](deployment.md).
 
+## File Structure
+
+millos-cuisine-explorer/
+├── Frontend Files
+│   ├── index.html              # Main HTML structure
+│   ├── style.css               # Application styling
+│   ├── app.js                  # Frontend JavaScript
+│   └── health.js               # Health check functionality
+├── Backend Files
+│   ├── server.js               # Express.js server
+│   ├── package.json            # Dependencies and scripts
+│   └── test-api.js             # API testing suite
+├── Deployment Files
+│   ├── deployment.md           # Detailed deployment guide
+│   ├── start.bat              # Windows start script
+│   └── start.sh               # Unix start script
+├── Documentation
+│   ├── README.md              # This file
+│   ├── ASSIGNMENT_REQUIREMENTS.md
+│   └── IMPLEMENTATION_SUMMARY.md
+└── Assets
+    └── images/                # Application images
+
+## 🔧 Technologies Used
+
+### Backend
+
+- **Node.js** - Runtime environment
+- **Express.js** - Web framework
+- **Axios** - HTTP client for API requests
+- **Node-cache** - In-memory caching
+- **Helmet.js** - Security middleware
+- **CORS** - Cross-origin resource sharing
+
+### Frontend
+
+- **HTML5** - Semantic markup
+- **CSS3** - Modern styling with Grid and Flexbox
+- **JavaScript (ES6+)** - Interactive functionality
+- **Fetch API** - HTTP requests
+
+### External APIs
+
+- **TheMealDB API** - Recipe data source
+
+## Security Features
+
+- **Helmet.js**: Security headers
+- **Input Validation**: Query parameter sanitization
+- **Error Handling**: No sensitive information exposure
+- **CORS Configuration**: Controlled cross-origin requests
+- **No API Keys**: Uses public API, no sensitive data
+
+## Performance Optimizations
+
+- **Server-side Caching**: 5-minute TTL for API responses
+- **Gzip Compression**: Reduced payload sizes
+- **Lazy Loading**: Images loaded on demand
+- **Efficient DOM Manipulation**: Minimal reflows and repaints
+
+## Error Handling
+
+- **API Downtime**: Graceful fallback messages
+- **Network Issues**: User-friendly error notifications
+- **Invalid Responses**: Proper error parsing and display
+- **Loading States**: Visual feedback during operations
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- **TheMealDB API** - For providing comprehensive recipe data
+- **Font Awesome** - For icons (if used)
+- **Google Fonts** - For Poppins font family
+
+## Support
+
+If you encounter any issues or have questions:
+
+1. Check the [deployment guide](deployment.md)
+2. Run the API test suite: `testAllAPIs()`
+3. Check server logs: `sudo journalctl -u millos-cuisine -f`
+4. Verify load balancer: `testLoadBalancer(10)`
