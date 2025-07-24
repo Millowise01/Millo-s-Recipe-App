@@ -22,49 +22,93 @@ This guide provides instructions for deploying the Millo's Cuisine Explorer appl
 
 1. Connect to Web01 via SSH:
    ```bash
-
    ssh username@web01-server-ip
-   ```bash
+   ```
 
-2. Navigate to the web server's document root:
-
+2. Install Node.js and npm (if not already installed):
    ```bash
-   cd /var/www/html/
+   curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+   sudo apt-get install -y nodejs
    ```
 
 3. Create a directory for the application:
-   sudo mkdir millos-cuisine
+   ```bash
+   sudo mkdir -p /var/www/millos-cuisine
+   sudo chown -R $USER:$USER /var/www/millos-cuisine
+   ```
 
-4. Set appropriate permissions:
-   sudo chown -R $USER:$USER /var/www/html/millos-cuisine
+4. Upload the application files using SCP from your local machine:
+   ```bash
+   scp -r /path/to/local/Millo-s-Recipe-App/* username@web01-server-ip:/var/www/millos-cuisine/
+   ```
 
-5. Upload the application files using SCP from your local machine:
-   scp -r /path/to/local/Millo-s-Recipe-App/* username@web01-server-ip:/var/www/html/millos-cuisine/
+5. Install dependencies and configure the application:
+   ```bash
+   cd /var/www/millos-cuisine
+   npm install
+   ```
 
-6. Configure the web server (Apache example):
-   sudo nano /etc/apache2/sites-available/millos-cuisine.conf
+6. Create a systemd service for the Node.js application:
+   ```bash
+   sudo nano /etc/systemd/system/millos-cuisine.service
+   ```
 
    Add the following configuration:
    ```
-   <VirtualHost *:80>
-       ServerName web01.example.com
-       DocumentRoot /var/www/html/millos-cuisine
-       
-       <Directory /var/www/html/millos-cuisine>
-           Options Indexes FollowSymLinks
-           AllowOverride All
-           Require all granted
-       </Directory>
-       
-       ErrorLog ${APACHE_LOG_DIR}/millos-cuisine-error.log
-       CustomLog ${APACHE_LOG_DIR}/millos-cuisine-access.log combined
-   </VirtualHost>
+   [Unit]
+   Description=Millo's Cuisine Explorer
+   After=network.target
+
+   [Service]
+   Type=simple
+   User=www-data
+   WorkingDirectory=/var/www/millos-cuisine
+   ExecStart=/usr/bin/node server.js
+   Restart=on-failure
+   Environment=NODE_ENV=production
+   Environment=PORT=3000
+
+   [Install]
+   WantedBy=multi-user.target
    ```
 
-7. Enable the site and restart Apache:
+7. Enable and start the service:
+   ```bash
+   sudo systemctl daemon-reload
+   sudo systemctl enable millos-cuisine
+   sudo systemctl start millos-cuisine
    ```
-   sudo a2ensite millos-cuisine.conf
-   sudo systemctl restart apache2
+
+8. Configure Nginx as a reverse proxy:
+   ```bash
+   sudo nano /etc/nginx/sites-available/millos-cuisine
+   ```
+
+   Add the following configuration:
+   ```
+   server {
+       listen 80;
+       server_name web01.example.com;
+
+       location / {
+           proxy_pass http://localhost:3000;
+           proxy_http_version 1.1;
+           proxy_set_header Upgrade $http_upgrade;
+           proxy_set_header Connection 'upgrade';
+           proxy_set_header Host $host;
+           proxy_set_header X-Real-IP $remote_addr;
+           proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+           proxy_set_header X-Forwarded-Proto $scheme;
+           proxy_cache_bypass $http_upgrade;
+       }
+   }
+   ```
+
+9. Enable the site and restart Nginx:
+   ```bash
+   sudo ln -s /etc/nginx/sites-available/millos-cuisine /etc/nginx/sites-enabled/
+   sudo nginx -t
+   sudo systemctl restart nginx
    ```
 
 #### Step 3: Deploy to Web02
@@ -107,6 +151,9 @@ Repeat the same steps as for Web01, but connect to Web02 instead:
    upstream millos_backend {
        server web01-server-ip:80;
        server web02-server-ip:80;
+       
+       # Health check
+       keepalive 32;
    }
 
    server {

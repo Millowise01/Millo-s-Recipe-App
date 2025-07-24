@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Millo's Food Recipe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <img src="logo.png" alt="Millo Logo">
+                <h1>Millo's Cuisine Explorer</h1>
+            </div>
+            <nav>
+                <button id="home-btn" class="nav-btn active">Home</button>
+                <button id="recipes-btn" class="nav-btn">Recipes</button>
+                <button id="countries-btn" class="nav-btn">African Countries</button>
+            </nav>
+        </header>
+
+        <main id="main-content">
+            <section id="home-section" class="active-section">
+                <h2>Discover your Taste</h2>
+                <p>Explore authentic recipes from across the continent</p>
+                <div class="featured-cuisines">
+                    <div class="cuisine-card">
+                        <img src="Moroccan Cuisine.jpg" alt="Moroccan Cuisine">
+                        <h3>Moroccan Cuisine</h3>
+                        <button class="cuisine-btn" data-cuisine="Moroccan">Explore</button>
+                    </div>
+                    <div class="cuisine-card">
+                        <img src="Ethiopian Cuisine.jpg" alt="Ethiopian Cuisine">
+                        <h3>Ethiopian Cuisine</h3>
+                        <button class="cuisine-btn" data-cuisine="Ethiopian">Explore</button>
+                    </div>
+                    <div class="cuisine-card">
+                        <img src="West African Cuisine.jpg" alt="West African Cuisine">
+                        <h3>West African Cuisine</h3>
+                        <button class="cuisine-btn" data-cuisine="West African">Explore</button>
+            
+                    </div> <!-- New Intercontinental Cuisines -->
+                    <div class="cuisine-card">
+                        <img src="Italian Cuisine.jpg" alt="Italian Cuisine">
+                        <h3>Italian Cuisine</h3>
+                        <button class="cuisine-btn" data-cuisine="Italian">Explore</button>
+                    </div>
+            <div class="cuisine-card">
+            <img src="Chinese Cuisine.jpg" alt="Chinese Cuisine">
+            <h3>Chinese Cuisine</h3>
+            <button class="cuisine-btn" data-cuisine="Chinese">Explore</button>
+        </div>
+        <div class="cuisine-card">
+            <img src="American Cuisine.jpg" alt="American Cuisine">
+            <h3>American Cuisine</h3>
+            <button class="cuisine-btn" data-cuisine="American">Explore</button>
+        </div>
+                </div>
+            </section>
+
+            <section id="recipes-section" class="section">
+                <div class="search-container">
+                    <input type="text" id="recipe-search" placeholder="Search recipes...">
+                    <button id="search-btn">Search</button>
+                </div>
+                <div id="recipes-grid" class="recipes-grid">
+                    <!-- Recipes will be dynamically added here -->
+                </div>
+            </section>
+
+            <section id="countries-section" class="section">
+                <h2>Select a Region</h2>
+                <div class="countries-grid">
+                    <button class="country-btn" data-country="West_African">West Africa</button>
+                    <button class="country-btn" data-country="North_African">North Africa</button>
+                    <button class="country-btn" data-country="East_African">East Africa</button>
+                    <button class="country-btn" data-country="South_African">South Africa</button>
+                    <button class="country-btn" data-country="Central_African">Central Africa</button>
+                </div>
+                <div class="filter-container">
+                    <h3>Filter by Category</h3>
+                    <div class="filter-options">
+                        <button class="filter-btn" data-filter="Vegetarian">Vegetarian</button>
+                        <button class="filter-btn" data-filter="Seafood">Seafood</button>
+                        <button class="filter-btn" data-filter="Chicken">Chicken</button>
+                        <button class="filter-btn" data-filter="Beef">Beef</button>
+                        <button class="filter-btn" data-filter="Dessert">Dessert</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Millo's Cuisine Explorer. All rights reserved.</p>
+        </footer>
+    </div>
+    <script src="health.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

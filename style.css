@@ -381,3 +381,84 @@ nav {
 .close-btn:hover {
   color: #ff0000;
 }
+
+/* General layout */
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+header {
+  background-color: #fff;
+  border-block-end: 1px solid #ccc;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo img {
+  block-size: 40px;
+}
+
+nav a {
+  margin: 0 10px;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+}
+
+nav a:hover {
+  color: #0077cc;
+}
+
+main {
+  padding: 20px;
+  max-inline-size: 1000px;
+  margin: auto;
+}
+
+h2 {
+  font-size: 24px;
+  margin-block-end: 20px;
+}
+
+.dish-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  margin-block-end: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.dish-card h3 {
+  margin-block-start: 0;
+}
+
+.dish-card a {
+  color: #0077cc;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.dish-card a:hover {
+  text-decoration: underline;
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  background-color: #fff;
+  border-block-start: 1px solid #ccc;
+  margin-block-start: 40px;
+  font-size: 14px;
+} 

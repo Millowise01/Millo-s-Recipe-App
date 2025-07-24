@@ -29,16 +29,40 @@ Contributions are welcome! Please fork the repository and submit a pull request.
 To set up the project locally, follow these steps:
 
 1. **Clone the repository**:
-bash
+```bash
 git clone https://github.com/your-username/millos-cuisine-explorer.git
+```
 
 2. **Navigate to the project directory**:
-bash
+```bash
 cd millos-cuisine-explorer
+```
 
-3. **Open `index.html` in your web browser**:
-bash
-open index.html
+3. **Install dependencies**:
+```bash
+npm install
+```
+
+4. **Start the server**:
+```bash
+npm start
+```
+
+5. **Access the application**:
+Open your web browser and navigate to `http://localhost:3000`
+
+### Quick Start Scripts
+
+**Windows:**
+```cmd
+start.bat
+```
+
+**Linux/Mac:**
+```bash
+chmod +x start.sh
+./start.sh
+```
 
 ## Usage
 
@@ -59,17 +83,34 @@ open index.html
 1. Click on a recipe card.
 2. A modal will open displaying detailed information about the recipe, including ingredients and instructions.
 
-### index.html
+## File Structure
 
-Contains the structure of the web application, including the header, navigation buttons, sections, and footer.
+### Frontend Files
+- **index.html** - Main HTML structure with navigation and sections
+- **style.css** - Styling for the web application
+- **app.js** - Frontend JavaScript for user interactions
+- **health.js** - Health check functionality
 
-### style.css
+### Backend Files
+- **server.js** - Express.js server with API endpoints
+- **package.json** - Node.js dependencies and scripts
 
-Contains styles for the web application, including layout, typography, and interactive elements.
+### Deployment Files
+- **deployment.md** - Detailed deployment instructions
+- **start.bat** / **start.sh** - Quick start scripts
+- **.gitignore** - Git ignore file
 
-### app.js
+## Backend API Endpoints
 
-Contains JavaScript for dynamic behavior, including navigation logic, fetching and displaying recipes, and handling user interactions.
+- `GET /api/health` - Health check endpoint
+- `GET /api/recipes/random?count=4` - Get random recipes
+- `GET /api/recipes/search?q=query` - Search recipes by name
+- `GET /api/recipes/category/:category` - Get recipes by category
+- `GET /api/recipes/area/:area` - Get recipes by area/cuisine
+- `GET /api/recipes/details/:id` - Get detailed recipe information
+- `GET /api/categories` - Get all available categories
+- `GET /api/areas` - Get all available areas/cuisines
+- `GET /api/recipes/african` - Get featured African recipes
 
 ## API Reference
 
