@@ -86,7 +86,7 @@ chmod +x start.sh
 - **Caching Strategy**: 5-minute TTL to optimize performance
 - **Error Handling**: Graceful fallback for API issues
 
-## 📡 API Endpoints
+## API Endpoints
 
 - `GET /api/health` - Health check for load balancer
 - `GET /api/recipes/random?count=N` - Get random recipes
@@ -98,7 +98,7 @@ chmod +x start.sh
 - `GET /api/areas` - Get all available cuisines/areas
 - `GET /api/recipes/african` - Get featured African recipes
 
-## 🧪 Testing
+## Testing
 
 ### API Testing
 
@@ -123,7 +123,7 @@ After deployment, test load balancing:
 testLoadBalancer(20)
 ```
 
-## 🚀 Deployment
+## Deployment
 
 ### Local Development
 
@@ -267,7 +267,7 @@ millos-cuisine-explorer/
 └── Assets
     └── images/                # Application images
 
-## 🔧 Technologies Used
+## Technologies Used
 
 ### Backend
 
