@@ -1,6 +1,6 @@
 # Millo's Cuisine Explorer
 
-A full-stack web application for discovering and exploring authentic recipes from various African and intercontinental cuisines. Built with Node.js, Express.js, and vanilla JavaScript.
+A web application for discovering and exploring authentic recipes from various African and intercontinental cuisines. Built with Node.js, Express.js, and vanilla JavaScript with Docker containerization and load balancing.
 
 ## Purpose
 
@@ -8,34 +8,41 @@ This application serves a practical purpose by helping users discover authentic 
 
 ## Features
 
-- **Recipe Search**: Real-time search by recipe name
 - **Cuisine Filtering**: Browse recipes by African regions and international cuisines
-- **Category Filtering**: Filter by food categories (Vegetarian, Seafood, Chicken, etc.)
-- **Recipe Sorting**: Alphabetical sorting options (A-Z, Z-A)
 - **Detailed Views**: Complete recipe information with ingredients and instructions
 - **Popular Recipes**: Featured recipes on the home page
 - **Responsive Design**: Works on all devices and screen sizes
+- **API Protection**: Secured endpoints with API key authentication
+- **Rate Limiting**: Protection against abuse with request throttling
 
 ## Quick Start
 
 ### Prerequisites
 
-- Node.js (v14 or higher)
+- Node.js (v18 or higher)
+- Docker and Docker Compose
 - npm (Node Package Manager)
 
-### Installation & Setup
+### Local Development
 
-1. **Clone the repository**:
+**Clone the repository**:
 
 ```bash
 git clone https://github.com/Millowise01/Millo-s-Recipe-App.git
-cd millos-cuisine-explorer
+cd Millo-s-Recipe-App
 ```
 
 **Install dependencies**:
 
 ```bash
 npm install
+```
+
+**Set environment variables**:
+
+```bash
+export API_KEY=secure-api-key-2024
+export PORT=8080
 ```
 
 **Start the server**:
@@ -45,97 +52,150 @@ npm start
 ```
 
 **Access the application**:
+Open your browser and navigate to `http://localhost:8080`
 
-Open your browser and navigate to `http://localhost:3000`
+## Docker Deployment
 
-### Quick Start Scripts
+### Part 2A: Docker Containers + Docker Hub
 
-**Windows:**
+#### Image Details
 
-```cmd
-start.bat
-```
+- **Docker Hub Repository**: https://hub.docker.com/r/millowise01/millos-cuisine
+- **Image Name**: `millowise01/millos-cuisine`
+- **Available Tags**: `v1`, `v1.1`, `latest`
+- **Base Image**: node:18-alpine
+- **Image Size**: ~150MB (optimized)
 
-**Linux/Mac:**
+#### Build Instructions
 
-```bash
-chmod +x start.sh
-./start.sh
-```
-
-## Architecture
-
-### Backend (Node.js + Express.js)
-
-- RESTful API with 9 endpoints
-- Server-side caching for performance
-- Comprehensive error handling
-- Security headers and CORS configuration
-
-### Frontend (HTML + CSS + JavaScript)
-
-- Responsive, modern UI design
-- Dynamic content loading
-- Interactive user interface
-- Real-time search and filtering
-
-### External API Integration
-
-- **TheMealDB API**: Primary data source for recipes
-
-- **Caching Strategy**: 5-minute TTL to optimize performance
-- **Error Handling**: Graceful fallback for API issues
-
-## API Endpoints
-
-- `GET /api/health` - Health check for load balancer
-- `GET /api/recipes/random?count=N` - Get random recipes
-- `GET /api/recipes/search?q=query` - Search recipes by name
-- `GET /api/recipes/category/:category` - Get recipes by category
-- `GET /api/recipes/area/:area` - Get recipes by cuisine/area
-- `GET /api/recipes/details/:id` - Get detailed recipe information
-- `GET /api/categories` - Get all available categories
-- `GET /api/areas` - Get all available cuisines/areas
-- `GET /api/recipes/african` - Get featured African recipes
-
-## Testing
-
-### API Testing
-
-Load the test suite in your browser console:
-
-```javascript
-// Test all API endpoints
-testAllAPIs()
-
-// Test specific meal details
-testMealDetails('52874')
-
-// Performance testing
-performanceTest()
-```
-
-### Load Balancer Testing
-
-After deployment, test load balancing:
-
-```javascript
-testLoadBalancer(20)
-```
-
-## Deployment
-
-### Local Development
+**Build the Docker image**:
 
 ```bash
-npm run dev  # Start with nodemon for development
+docker build -t millowise01/millos-cuisine:v1 .
 ```
 
-### Production Deployment
+**Test locally**:
+
+```bash
+docker run -p 8080:8080 -e API_KEY=secure-api-key-2024 millowise01/millos-cuisine:v1
+curl -H "X-API-Key: secure-api-key-2024" http://localhost:8080/api/health
+```
+
+**Push to Docker Hub**:
+
+```bash
+docker login
+docker push millowise01/millos-cuisine:v1
+docker tag millowise01/millos-cuisine:v1 millowise01/millos-cuisine:latest
+docker push millowise01/millos-cuisine:latest
+```
+
+#### Deploy on Lab Machines
+
+**Lab Infrastructure:**
+- **Lab Setup**: Based on https://github.com/waka-man/web_infra_lab.git
+- **Web01**: 172.20.0.11 (Docker container)
+- **Web02**: 172.20.0.12 (Docker container)
+- **Load Balancer**: 172.20.0.10 (HAProxy container)
+
+**SSH into web-01 and web-02**:
+
+```bash
+# On web-01 (172.20.0.11)
+ssh user@web-01
+docker pull millowise01/millos-cuisine:v1
+docker run -d --name app --restart unless-stopped \
+  -p 8080:8080 \
+  -e API_KEY=secure-api-key-2024 \
+  -e NODE_ENV=production \
+  -e SERVER_NAME=web-01 \
+  millowise01/millos-cuisine:v1
+
+# On web-02 (172.20.0.12)
+ssh user@web-02
+docker pull millowise01/millos-cuisine:v1
+docker run -d --name app --restart unless-stopped \
+  -p 8080:8080 \
+  -e API_KEY=secure-api-key-2024 \
+  -e NODE_ENV=production \
+  -e SERVER_NAME=web-02 \
+  millowise01/millos-cuisine:v1
+```
+
+**Verify instances are running**:
+
+```bash
+# Test web-01 internally
+curl -H "X-API-Key: secure-api-key-2024" http://web-01:8080/api/health
+
+# Test web-02 internally  
+curl -H "X-API-Key: secure-api-key-2024" http://web-02:8080/api/health
+
+# Verify external access
+curl -H "X-API-Key: secure-api-key-2024" http://172.20.0.11:8080/api/health
+curl -H "X-API-Key: secure-api-key-2024" http://172.20.0.12:8080/api/health
+```
+
+#### Configure Load Balancer (lb-01)
+
+**Update HAProxy configuration**:
+
+```bash
+# Copy haproxy.cfg to lb-01
+scp haproxy.cfg user@lb-01:/tmp/haproxy.cfg
+
+# SSH into lb-01
+ssh user@lb-01
+sudo cp /tmp/haproxy.cfg /etc/haproxy/haproxy.cfg
+```
+
+**HAProxy Configuration**:
+
+```haproxy
+backend webapps
+    balance roundrobin
+    option httpchk GET /api/health
+    http-check expect status 200
+    server web01 172.20.0.11:8080 check inter 30s fall 3 rise 2
+    server web02 172.20.0.12:8080 check inter 30s fall 3 rise 2
+```
+
+**Reload HAProxy**:
+
+```bash
+docker exec -it lb-01 sh -c 'haproxy -sf $(pidof haproxy) -f /etc/haproxy/haproxy.cfg'
+```
+
+#### Testing Steps & Evidence
+
+**Test load balancing**:
+
+```bash
+# Make multiple requests to verify round-robin
+for i in {1..10}; do
+  curl -H "X-API-Key: secure-api-key-2024" http://localhost/api/health
+  echo ""
+done
+```
+
+**Verify container health**:
+
+```bash
+docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+```
+
+**Check logs**:
+
+```bash
+docker logs millos-web01
+docker logs millos-web02
+```
+
+### Part 2B: Traditional Deployment
 
 #### Web Servers (Web01 & Web02)
 
-1. **Install Node.js**:
+**Install Node.js**:
 
 ```bash
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
@@ -149,16 +209,13 @@ sudo mkdir -p /var/www/millos-cuisine
 sudo chown -R $USER:$USER /var/www/millos-cuisine
 scp -r ./* username@server-ip:/var/www/millos-cuisine/
 cd /var/www/millos-cuisine
-npm install
+npm install --production
 ```
 
 **Create systemd service**:
 
 ```bash
-sudo nano /etc/systemd/system/millos-cuisine.service
-```
-
-```ini
+sudo tee /etc/systemd/system/millos-cuisine.service > /dev/null <<EOF
 [Unit]
 Description=Millo's Cuisine Explorer
 After=network.target
@@ -170,10 +227,12 @@ WorkingDirectory=/var/www/millos-cuisine
 ExecStart=/usr/bin/node server.js
 Restart=on-failure
 Environment=NODE_ENV=production
-Environment=PORT=3000
+Environment=PORT=8080
+Environment=API_KEY=secure-api-key-2024
 
 [Install]
 WantedBy=multi-user.target
+EOF
 ```
 
 **Start service**:
@@ -184,132 +243,165 @@ sudo systemctl enable millos-cuisine
 sudo systemctl start millos-cuisine
 ```
 
-**Configure Nginx reverse proxy**:
+## Architecture
+
+### Backend (Node.js + Express.js)
+
+- **RESTful API**: 9 protected endpoints with API key authentication
+- **Security**: Helmet.js, CORS, rate limiting, input validation
+- **Caching**: Server-side caching with 5-minute TTL
+- **Error Handling**: Comprehensive error management
+- **Health Checks**: Built-in health monitoring
+
+### Frontend (HTML + CSS + JavaScript)
+
+- **Responsive Design**: Mobile-first approach
+- **API Integration**: Authenticated requests to backend
+- **Interactive UI**: Real-time search and filtering
+- **Error Handling**: User-friendly error messages
+
+### External API Integration
+
+- **TheMealDB API**: Primary data source for recipes
+- **Caching Strategy**: Reduces external API calls
+- **Error Handling**: Graceful fallback mechanisms
+
+## Security Features
+
+### API Protection
+
+- **API Key Authentication**: All endpoints require valid API key
+- **Rate Limiting**: 100 requests per 15-minute window per IP
+- **Input Validation**: Query parameter sanitization
+- **Security Headers**: Comprehensive CSP and security headers
+- **CORS Configuration**: Controlled cross-origin requests
+
+### Container Security
+
+- **Non-root User**: Application runs as nodejs user
+- **Minimal Base Image**: Alpine Linux for reduced attack surface
+- **Health Checks**: Container health monitoring
+- **Secret Management**: Environment variables for sensitive data
+
+## API Endpoints
+
+All endpoints require `X-API-Key` header or `apiKey` query parameter:
+
+- `GET /api/health` - Health check (no auth required)
+- `GET /api/recipes/random?count=N` - Get random recipes
+- `GET /api/recipes/search?q=query` - Search recipes by name
+- `GET /api/recipes/category/:category` - Get recipes by category
+- `GET /api/recipes/area/:area` - Get recipes by cuisine/area
+- `GET /api/recipes/details/:id` - Get detailed recipe information
+- `GET /api/categories` - Get all available categories
+- `GET /api/areas` - Get all available cuisines/areas
+- `GET /api/recipes/african` - Get featured African recipes
+
+### Example Usage
 
 ```bash
-sudo nano /etc/nginx/sites-available/millos-cuisine
+curl -H "X-API-Key: secure-api-key-2024" \
+  "http://localhost:8080/api/recipes/search?q=chicken"
 ```
 
-```nginx
-server {
-    listen 80;
-    server_name your-domain.com;
+## esting
 
-    location / {
-        proxy_pass http://localhost:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_cache_bypass $http_upgrade;
-    }
-}
+### API Testing
+
+```javascript
+// Load test suite in browser console
+testAllAPIs()
+testMealDetails('52874')
+performanceTest()
 ```
+
+### Load Balancer Testing
+
+```javascript
+testLoadBalancer(20)
+```
+
+### Docker Testing
 
 ```bash
-sudo ln -s /etc/nginx/sites-available/millos-cuisine /etc/nginx/sites-enabled/
-sudo nginx -t
-sudo systemctl restart nginx
+# Test with docker-compose
+npm run compose:up
+curl -H "X-API-Key: secure-api-key-2024" http://localhost/api/health
+npm run compose:down
 ```
-
-#### Load Balancer (Lb01)
-
-```bash
-sudo nano /etc/nginx/sites-available/millos-cuisine-lb
-```
-
-```nginx
-upstream millos_backend {
-    server web01-ip:80;
-    server web02-ip:80;
-    keepalive 32;
-}
-
-server {
-    listen 80;
-    server_name your-load-balancer-domain.com;
-
-    location / {
-        proxy_pass http://millos_backend;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-```
-
-For detailed deployment instructions, see [deployment.md](deployment.md).
 
 ## File Structure
 
 millos-cuisine-explorer/
+├── Docker Files
+│   ├── Dockerfile              # Container definition
+│   ├── .dockerignore          # Docker ignore rules
+│   ├── docker-compose.yml     # Local testing setup
+│   └── healthcheck.js         # Container health check
 ├── Frontend Files
-│   ├── index.html              # Main HTML structure
-│   ├── style.css               # Application styling
-│   ├── app.js                  # Frontend JavaScript
-│   └── health.js               # Health check functionality
+│   ├── index.html             # Main HTML structure
+│   ├── style.css              # Application styling
+│   ├── app.js                 # Frontend JavaScript (with auth)
+│   └── health.js              # Health check functionality
 ├── Backend Files
-│   ├── server.js               # Express.js server
-│   ├── package.json            # Dependencies and scripts
-│   └── test-api.js             # API testing suite
+│   ├── server.js              # Express.js server (with security)
+│   ├── package.json           # Dependencies and scripts
+│   └── test-api.js            # API testing suite
 ├── Deployment Files
-│   ├── deployment.md           # Detailed deployment guide
+│   ├── haproxy.cfg            # Load balancer configuration
+│   ├── deployment.md          # Detailed deployment guide
 │   ├── start.bat              # Windows start script
 │   └── start.sh               # Unix start script
-├── Documentation
-│   ├── README.md              # This file
-│   ├── ASSIGNMENT_REQUIREMENTS.md
-│   └── IMPLEMENTATION_SUMMARY.md
-└── Assets
-    └── images/                # Application images
+└── Documentation
+    ├── README.md              # This file
+    ├── ASSIGNMENT_REQUIREMENTS.md
+    └── IMPLEMENTATION_SUMMARY.md
 
 ## Technologies Used
 
 ### Backend
 
-- **Node.js** - Runtime environment
-- **Express.js** - Web framework
-- **Axios** - HTTP client for API requests
+- **Node.js 18** - Runtime environment
+- **Express.js** - Web framework with security middleware
+- **Helmet.js** - Security headers
 - **Node-cache** - In-memory caching
-- **Helmet.js** - Security middleware
-- **CORS** - Cross-origin resource sharing
+- **Compression** - Gzip compression
 
 ### Frontend
 
 - **HTML5** - Semantic markup
-- **CSS3** - Modern styling with Grid and Flexbox
-- **JavaScript (ES6+)** - Interactive functionality
-- **Fetch API** - HTTP requests
+- **CSS3** - Modern responsive design
+- **JavaScript ES6+** - Interactive functionality with authentication
+
+### DevOps
+
+- **Docker** - Containerization
+- **HAProxy** - Load balancing
+- **Docker Hub** - Image registry
 
 ### External APIs
 
 - **TheMealDB API** - Recipe data source
 
-## Security Features
+## Hardening & Security
 
-- **Helmet.js**: Security headers
-- **Input Validation**: Query parameter sanitization
-- **Error Handling**: No sensitive information exposure
-- **CORS Configuration**: Controlled cross-origin requests
-- **No API Keys**: Uses public API, no sensitive data
+### Secret Management
 
-## Performance Optimizations
+```bash
+# Environment variables (not baked into image)
+docker run -e API_KEY=$API_KEY millowise01/millos-cuisine:v1
 
-- **Server-side Caching**: 5-minute TTL for API responses
-- **Gzip Compression**: Reduced payload sizes
-- **Lazy Loading**: Images loaded on demand
-- **Efficient DOM Manipulation**: Minimal reflows and repaints
+# Docker secrets (production)
+echo "secure-api-key-2024" | docker secret create api_key -
+```
 
-## Error Handling
+### Production Considerations
 
-- **API Downtime**: Graceful fallback messages
-- **Network Issues**: User-friendly error notifications
-- **Invalid Responses**: Proper error parsing and display
-- **Loading States**: Visual feedback during operations
+- Use Docker secrets or external secret management
+- Implement HTTPS with SSL certificates
+- Set up monitoring and logging
+- Regular security updates
+- Database encryption at rest
 
 ## Contributing
 
@@ -326,14 +418,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Acknowledgments
 
 - **TheMealDB API** - For providing comprehensive recipe data
-- **Font Awesome** - For icons (if used)
-- **Google Fonts** - For Poppins font family
+- **Docker Community** - For containerization tools
+- **HAProxy** - For load balancing capabilities
 
 ## Support
 
-If you encounter any issues or have questions:
+If you encounter any issues:
 
-1. Check the [deployment guide](deployment.md)
-2. Run the API test suite: `testAllAPIs()`
-3. Check server logs: `sudo journalctl -u millos-cuisine -f`
-4. Verify load balancer: `testLoadBalancer(10)`
+1. Check container logs: `docker logs <container-name>`
+2. Verify API key configuration
+3. Test endpoints with proper authentication
+4. Check load balancer configuration

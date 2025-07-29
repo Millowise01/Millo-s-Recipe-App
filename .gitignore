@@ -63,3 +63,15 @@ out/
 
 # Yarn Integrity file
 .yarn-integrity
+
+# Docker
+.dockerignore
+
+# Environment files
+.env*
+!.env.example
+
+# Secrets
+secrets/
+*.key
+*.pem

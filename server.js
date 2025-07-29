@@ -7,17 +7,80 @@ const compression = require('compression');
 const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
+const API_KEY = process.env.API_KEY || 'default-key';
+const RATE_LIMIT_WINDOW = 15 * 60 * 1000; // 15 minutes
+const RATE_LIMIT_MAX = 100; // requests per window
 
 // Cache with 5 minutes TTL
 const cache = new NodeCache({ stdTTL: 300 });
 
+// Rate limiting store
+const rateLimitStore = new Map();
+
+// Rate limiting middleware
+function rateLimit(req, res, next) {
+    const clientIP = req.ip || req.connection.remoteAddress;
+    const now = Date.now();
+    
+    if (!rateLimitStore.has(clientIP)) {
+        rateLimitStore.set(clientIP, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
+        return next();
+    }
+    
+    const clientData = rateLimitStore.get(clientIP);
+    
+    if (now > clientData.resetTime) {
+        rateLimitStore.set(clientIP, { count: 1, resetTime: now + RATE_LIMIT_WINDOW });
+        return next();
+    }
+    
+    if (clientData.count >= RATE_LIMIT_MAX) {
+        return res.status(429).json({ 
+            error: 'Too many requests', 
+            success: false,
+            retryAfter: Math.ceil((clientData.resetTime - now) / 1000)
+        });
+    }
+    
+    clientData.count++;
+    next();
+}
+
+// API Key validation middleware
+function validateApiKey(req, res, next) {
+    const apiKey = req.headers['x-api-key'] || req.query.apiKey;
+    
+    if (!apiKey || apiKey !== API_KEY) {
+        return res.status(401).json({ 
+            error: 'Invalid or missing API key', 
+            success: false 
+        });
+    }
+    
+    next();
+}
+
 // Middleware
-app.use(helmet());
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+            fontSrc: ["'self'", "https://fonts.gstatic.com"],
+            imgSrc: ["'self'", "data:", "https:"],
+            scriptSrc: ["'self'"]
+        }
+    }
+}));
 app.use(compression());
-app.use(cors());
-app.use(express.json());
+app.use(cors({
+    origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : '*',
+    credentials: true
+}));
+app.use(express.json({ limit: '10mb' }));
 app.use(express.static(path.join(__dirname)));
+app.use(rateLimit);
 
 // TheMealDB API base URL
 const MEAL_API_BASE = 'https://www.themealdb.com/api/json/v1/1';
@@ -54,12 +117,16 @@ app.get('/api/health', (req, res) => {
         status: 'healthy',
         timestamp: new Date().toISOString(),
         server: process.env.SERVER_NAME || 'unknown',
-        uptime: process.uptime()
+        serverIP: process.env.SERVER_IP || 'unknown',
+        port: PORT,
+        uptime: process.uptime(),
+        environment: process.env.NODE_ENV || 'development',
+        version: '1.0.0'
     });
 });
 
 // Get random recipes for home page
-app.get('/api/recipes/random', async (req, res) => {
+app.get('/api/recipes/random', validateApiKey, async (req, res) => {
     try {
         const count = parseInt(req.query.count) || 4;
         const promises = [];
@@ -78,7 +145,7 @@ app.get('/api/recipes/random', async (req, res) => {
 });
 
 // Search recipes by name
-app.get('/api/recipes/search', async (req, res) => {
+app.get('/api/recipes/search', validateApiKey, async (req, res) => {
     const { q } = req.query;
     
     if (!q) {
@@ -96,7 +163,7 @@ app.get('/api/recipes/search', async (req, res) => {
 });
 
 // Get recipes by category
-app.get('/api/recipes/category/:category', async (req, res) => {
+app.get('/api/recipes/category/:category', validateApiKey, async (req, res) => {
     const { category } = req.params;
     
     try {
@@ -110,7 +177,7 @@ app.get('/api/recipes/category/:category', async (req, res) => {
 });
 
 // Get recipes by area/cuisine
-app.get('/api/recipes/area/:area', async (req, res) => {
+app.get('/api/recipes/area/:area', validateApiKey, async (req, res) => {
     const { area } = req.params;
     
     try {
@@ -124,7 +191,7 @@ app.get('/api/recipes/area/:area', async (req, res) => {
 });
 
 // Get meal details by ID
-app.get('/api/recipes/details/:id', async (req, res) => {
+app.get('/api/recipes/details/:id', validateApiKey, async (req, res) => {
     const { id } = req.params;
     
     try {
@@ -142,7 +209,7 @@ app.get('/api/recipes/details/:id', async (req, res) => {
 });
 
 // Get all categories
-app.get('/api/categories', async (req, res) => {
+app.get('/api/categories', validateApiKey, async (req, res) => {
     try {
         const cacheKey = 'all_categories';
         const data = await fetchWithCache(`${MEAL_API_BASE}/categories.php`, cacheKey);
@@ -154,7 +221,7 @@ app.get('/api/categories', async (req, res) => {
 });
 
 // Get all areas/cuisines
-app.get('/api/areas', async (req, res) => {
+app.get('/api/areas', validateApiKey, async (req, res) => {
     try {
         const cacheKey = 'all_areas';
         const data = await fetchWithCache(`${MEAL_API_BASE}/list.php?a=list`, cacheKey);
@@ -166,7 +233,7 @@ app.get('/api/areas', async (req, res) => {
 });
 
 // Get featured African recipes
-app.get('/api/recipes/african', async (req, res) => {
+app.get('/api/recipes/african', validateApiKey, async (req, res) => {
     try {
         const cacheKey = 'african_recipes';
         

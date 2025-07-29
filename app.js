@@ -1,5 +1,6 @@
 // API base URL for our backend
 const API_BASE_URL = '/api';
+const API_KEY = 'secure-api-key-2024'; // In production, this should be fetched securely
 
 document.addEventListener('DOMContentLoaded', () => {
     initializeApp();
@@ -98,10 +99,21 @@ function initializeApp() {
     fetchRecipesByArea();
 }
 
+// Helper function to make authenticated API requests
+async function apiRequest(url, options = {}) {
+    const headers = {
+        'X-API-Key': API_KEY,
+        'Content-Type': 'application/json',
+        ...options.headers
+    };
+    
+    return fetch(url, { ...options, headers });
+}
+
 // Load popular recipes for home page
 async function loadPopularRecipes() {
     try {
-        const response = await fetch(`${API_BASE_URL}/recipes/random?count=4`);
+        const response = await apiRequest(`${API_BASE_URL}/recipes/random?count=4`);
         const data = await response.json();
         
         if (data.success && data.meals) {
@@ -148,7 +160,7 @@ async function fetchRecipesByArea(area = '') {
             `${API_BASE_URL}/recipes/area/${encodeURIComponent(area)}` : 
             `${API_BASE_URL}/recipes/african`;
         
-        const response = await fetch(url);
+        const response = await apiRequest(url);
         const data = await response.json();
         
         if (!data.success) {
@@ -173,7 +185,7 @@ async function searchRecipes(query) {
         const recipesGrid = document.getElementById('recipes-grid');
         showLoading(recipesGrid);
         
-        const response = await fetch(`${API_BASE_URL}/recipes/search?q=${encodeURIComponent(query)}`);
+        const response = await apiRequest(`${API_BASE_URL}/recipes/search?q=${encodeURIComponent(query)}`);
         const data = await response.json();
         
         if (!data.success) {
@@ -198,7 +210,7 @@ async function fetchRecipesByCategory(category) {
         const recipesGrid = document.getElementById('recipes-grid');
         showLoading(recipesGrid);
         
-        const response = await fetch(`${API_BASE_URL}/recipes/category/${encodeURIComponent(category)}`);
+        const response = await apiRequest(`${API_BASE_URL}/recipes/category/${encodeURIComponent(category)}`);
         const data = await response.json();
         
         if (!data.success) {
@@ -285,7 +297,7 @@ async function fetchMealDetails(mealId) {
         const loadingModal = createLoadingModal();
         document.body.appendChild(loadingModal);
         
-        const response = await fetch(`${API_BASE_URL}/recipes/details/${mealId}`);
+        const response = await apiRequest(`${API_BASE_URL}/recipes/details/${mealId}`);
         const data = await response.json();
         
         document.body.removeChild(loadingModal);

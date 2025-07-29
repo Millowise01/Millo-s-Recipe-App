@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>American Dishes</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="main.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Millo's Cuisine Explorer</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
 </head>
 <body>
   <header>
@@ -13,47 +13,71 @@
       <h1>Millo's Cuisine Explorer</h1>
     </div>
     <nav>
-      <a href="index.html">Home</a>
-      <a href="african.html">African Dishes</a>
-      <a href="asian.html">Asian Dishes</a>
-      <a href="european.html">European Dishes</a>
-      <a href="american.html">American Dishes</a>
+      <button class="nav-btn active" id="home-btn">Home</button>
+      <button class="nav-btn" id="recipes-btn">Recipes</button>
+      <button class="nav-btn" id="countries-btn">Countries</button>
     </nav>
   </header>
 
   <main>
-    <section id="popular-dishes">
-      <h2>Popular Dishes Around the World</h2>
-      <div class="dish-card">
-        <h3>Pizza Margherita (Italy)</h3>
-        <p>Ingredients: Flour, Tomatoes, Mozzarella, Basil, Olive Oil</p>
-        <a href="https://youtu.be/4VSW29yWPlA?si=kFwTmDu-QlE8Xfuq" target="_blank" rel="noopener">Watch Recipe</a>
+    <!-- Home Section -->
+    <section id="home-section" class="section active-section">
+      <h2>Welcome to Millo's Cuisine Explorer</h2>
+      <p>Discover authentic recipes from around the world, with a special focus on African cuisines.</p>
+      
+      <div class="featured-cuisines">
+        <h3>Featured Cuisines</h3>
+        <div class="cuisine-buttons">
+          <button class="cuisine-btn" data-cuisine="African">African</button>
+          <button class="cuisine-btn" data-cuisine="Asian">Asian</button>
+          <button class="cuisine-btn" data-cuisine="European">European</button>
+          <button class="cuisine-btn" data-cuisine="American">American</button>
+        </div>
       </div>
-      <div class="dish-card">
-        <h3>Sushi (Japan)</h3>
-        <p>Ingredients: Sushi Rice, Nori, Raw Fish, Soy Sauce</p>
-        <a href="https://youtu.be/joweUxpHaqc?si=eATPjORHpIYdq2Bg" target="_blank" rel="noopener">Watch Recipe</a>
+    </section>
+
+    <!-- Recipes Section -->
+    <section id="recipes-section" class="section">
+      <h2>Recipe Collection</h2>
+      
+      <div class="search-container">
+        <input type="text" id="recipe-search" placeholder="Search for recipes...">
+        <button id="search-btn">Search</button>
       </div>
-      <div class="dish-card">
-        <h3>Tacos (Mexico)</h3>
-        <p>Ingredients: Tortilla, Ground Beef, Lettuce, Cheese, Salsa</p>
-        <a href="https://youtu.be/ALeF0GUCSSk?si=wzLFYc6-8f4YqV5r" target="_blank" rel="noopener">Watch Recipe</a>
+      
+      <div class="filter-container">
+        <h3>Filter by Category</h3>
+        <div class="filter-buttons">
+          <button class="filter-btn" data-filter="Beef">Beef</button>
+          <button class="filter-btn" data-filter="Chicken">Chicken</button>
+          <button class="filter-btn" data-filter="Seafood">Seafood</button>
+          <button class="filter-btn" data-filter="Vegetarian">Vegetarian</button>
+          <button class="filter-btn" data-filter="Dessert">Dessert</button>
+        </div>
       </div>
-      <div class="dish-card">
-        <h3>Jollof Rice (Nigeria)</h3>
-        <p>Ingredients: Rice, Tomato Paste, Onions, Peppers, Chicken</p>
-        <a href="https://youtu.be/EfZEArZcfAY?si=xafOYCpYqBovVGUB" target="_blank" rel="noopener">Watch Recipe</a>
-      </div>
-      <div class="dish-card">
-        <h3>Beef Bourguignon (France)</h3>
-        <p>Ingredients: Beef, Red Wine, Mushrooms, Bacon, Onion</p>
-        <a href="https://youtu.be/_Bx9P32tdaM?si=l60MefHI8xEoUDnL" target="_blank" rel="noopener">Watch Recipe</a>
+      
+      <div id="recipes-grid"></div>
+    </section>
+
+    <!-- Countries Section -->
+    <section id="countries-section" class="section">
+      <h2>Explore by Country</h2>
+      <div class="countries-grid">
+        <button class="country-btn" data-country="Nigerian">Nigeria</button>
+        <button class="country-btn" data-country="Moroccan">Morocco</button>
+        <button class="country-btn" data-country="Ethiopian">Ethiopia</button>
+        <button class="country-btn" data-country="Italian">Italy</button>
+        <button class="country-btn" data-country="Chinese">China</button>
+        <button class="country-btn" data-country="Indian">India</button>
+        <button class="country-btn" data-country="Mexican">Mexico</button>
+        <button class="country-btn" data-country="French">France</button>
       </div>
     </section>
   </main>
 
   <footer>
     <p>&copy; 2025 Millo's Cuisine Explorer. All rights reserved.</p>
+    <p>Powered by <a href="https://www.themealdb.com/" target="_blank" rel="noopener">TheMealDB API</a></p>
   </footer>
 </body>
 </html>
