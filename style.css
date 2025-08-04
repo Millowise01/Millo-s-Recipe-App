@@ -10,12 +10,12 @@ body {
   font-family: 'Arial', sans-serif;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: #333;
-  min-height: 100vh;
+  min-block-size: 100vh;
 }
 
 header {
   background-color: rgba(255, 255, 255, 0.95);
-  border-bottom: 3px solid #667eea;
+  border-block-end: 3px solid #667eea;
   padding: 15px 20px;
   display: flex;
   justify-content: space-between;
@@ -54,7 +54,7 @@ nav {
 
 main {
   padding: 20px;
-  max-width: 1200px;
+  max-inline-size: 1200px;
   margin: 0 auto;
 }
 
@@ -72,14 +72,14 @@ main {
 
 h2 {
   font-size: 28px;
-  margin-bottom: 20px;
+  margin-block-end: 20px;
   text-align: center;
   color: #667eea;
 }
 
 h3 {
   font-size: 20px;
-  margin-bottom: 15px;
+  margin-block-end: 15px;
   color: #764ba2;
 }
 
@@ -87,7 +87,7 @@ h3 {
 .search-container {
   display: flex;
   gap: 10px;
-  margin-bottom: 20px;
+  margin-block-end: 20px;
   justify-content: center;
 }
 
@@ -96,7 +96,7 @@ h3 {
   border: 2px solid #667eea;
   border-radius: 5px;
   font-size: 16px;
-  width: 300px;
+  inline-size: 300px;
 }
 
 #search-btn {
